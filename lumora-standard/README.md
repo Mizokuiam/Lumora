@@ -10,7 +10,7 @@ Transform your coding experience with Lumora, an innovative VS Code extension th
 
 ## 🌟 Premium Features
 
-Upgrade to [Lumora Premium](https://mizokuiam.gumroad.com/l/lumora-premium) for advanced features:
+Upgrade to [Lumora Premium](https://mrmizoku.gumroad.com/l/lumora-premium) for advanced features:
 
 - **Advanced AI Theme Generation**: Create unique themes based on your preferences
 - **Custom Productivity Analytics**: Detailed insights and reports
@@ -19,7 +19,7 @@ Upgrade to [Lumora Premium](https://mizokuiam.gumroad.com/l/lumora-premium) for 
 - **Priority Support**: Direct access to the development team
 - **Early Access**: Be the first to try new features
 
-[Upgrade to Premium](https://mizokuiam.gumroad.com/l/lumora-premium) 🚀
+[Upgrade to Premium](https://mrmizoku.gumroad.com/l/lumora-premium) 🚀
 
 ## ✨ Standard Features
 
@@ -101,7 +101,7 @@ We welcome contributions! Please check our [Contributing Guidelines](CONTRIBUTIN
 - [Report Issues](https://github.com/Mizokuiam/Lumora/issues)
 - [Feature Requests](https://github.com/Mizokuiam/Lumora/issues)
 - [Q&A Discussions](https://github.com/Mizokuiam/Lumora/discussions)
-- [Premium Support](https://mizokuiam.gumroad.com/l/lumora-premium)
+- [Premium Support](https://mrmizoku.gumroad.com/l/lumora-premium)
 
 ## 📄 License
 
@@ -113,4 +113,4 @@ This extension is licensed under the [MIT License](LICENSE).
 
 *Lumora - Illuminate your coding experience* ✨
 
-[Upgrade to Premium](https://mizokuiam.gumroad.com/l/lumora-premium) for advanced features and priority support! 🚀
+[Upgrade to Premium](https://mrmizoku.gumroad.com/l/lumora-premium) for advanced features and priority support! 🚀
