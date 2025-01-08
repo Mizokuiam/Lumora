@@ -1,0 +1,27 @@
+# Premium and Gumroad content
+/lumora-premium/
+/gumroad/
+
+# Images and media
+/images/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.svg
+
+# Dependencies
+node_modules/
+.vscode/
+.vs/
+
+# Build output
+out/
+dist/
+*.vsix
+
+# Logs and temp files
+*.log
+.DS_Store
+Thumbs.db
