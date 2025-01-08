@@ -4,52 +4,67 @@
 ![VS Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/mizokuiam.lumora)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Lumora is an innovative VS Code extension that enhances your coding experience by dynamically adapting your editor's theme based on your mood and productivity levels. With built-in features like focus mode, pomodoro timer, and eye strain prevention, Lumora helps you maintain peak productivity while ensuring your well-being.
+Transform your coding experience with Lumora, an innovative VS Code extension that adapts your editor's theme based on your mood and productivity patterns. Using advanced AI algorithms, Lumora creates a personalized and dynamic coding environment that evolves with you throughout your workday.
 
-## Features
+![Lumora Demo](images/demo.gif)
+
+## 🌟 Premium Features
+
+Upgrade to [Lumora Premium](https://mizokuiam.gumroad.com/l/lumora-premium) for advanced features:
+
+- **Advanced AI Theme Generation**: Create unique themes based on your preferences
+- **Custom Productivity Analytics**: Detailed insights and reports
+- **Team Collaboration**: Share themes and productivity data
+- **Cloud Sync**: Sync settings across devices
+- **Priority Support**: Direct access to the development team
+- **Early Access**: Be the first to try new features
+
+[Upgrade to Premium](https://mizokuiam.gumroad.com/l/lumora-premium) 🚀
+
+## ✨ Standard Features
 
 ### 🎨 Dynamic Theme Adaptation
-- Automatically adjusts color schemes based on your coding patterns
-- Transitions between energizing and calming themes to match your work rhythm
-- Supports all popular VS Code themes
+- **Mood-Based Themes**: Automatically adjusts colors based on your coding patterns
+- **Productivity Enhancement**: Transitions between energizing and calming themes
+- **Seamless Integration**: Works with your favorite VS Code themes
 
-### ⏱️ Pomodoro Timer
-- Built-in pomodoro timer with customizable work/break durations
-- Visual and audio notifications for session transitions
-- Status bar integration for easy tracking
+### ⏱️ Smart Time Management
+- **Pomodoro Timer**: Built-in timer with customizable work/break durations
+- **Break Reminders**: Intelligent break suggestions to maintain productivity
+- **Time Tracking**: Monitor your coding sessions and patterns
 
-### 👁️ Eye Care Features
-- 20-20-20 rule reminders to prevent eye strain
-- Automatic break suggestions based on continuous coding time
-- Gentle visual indicators for break times
+### 👁️ Developer Wellness
+- **Eye Strain Prevention**: 20-20-20 rule reminders
+- **Focus Mode**: Distraction-free coding environment
+- **Sound Effects**: Optional ambient typing sounds for flow state
 
-### 🎯 Focus Mode
-- Distraction-free coding environment
-- Minimizes UI elements for maximum concentration
-- Quick toggle with keyboard shortcuts
+### 📊 Productivity Insights
+- **Activity Tracking**: Monitor your coding patterns
+- **Statistics Dashboard**: Visual representation of productivity
+- **Goal Setting**: Set and track coding objectives
 
-### 📊 Productivity Tracking
-- Track your daily coding patterns
-- View productivity statistics and insights
-- Set and monitor coding goals
+## 🚀 Getting Started
 
-## Getting Started
-
-1. Install the extension from the VS Code Marketplace
+1. Install Lumora from the VS Code Marketplace
 2. Restart VS Code
-3. Access Lumora features through:
+3. Access features through:
    - Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`)
    - Status Bar items
    - Keyboard shortcuts
 
-## Commands
+## 🎮 Commands
 
-- `Lumora: Toggle Focus Mode` - Enable/disable distraction-free mode
-- `Lumora: Start Pomodoro Timer` - Begin a pomodoro session
-- `Lumora: Stop Pomodoro Timer` - End current pomodoro session
-- `Lumora: Show Productivity Stats` - View your coding statistics
+| Command | Description |
+|---------|-------------|
+| `Lumora: Toggle Focus Mode` | Enable/disable distraction-free mode |
+| `Lumora: Start Pomodoro` | Begin a pomodoro session |
+| `Lumora: Stop Pomodoro` | End current pomodoro session |
+| `Lumora: Show Stats` | View productivity statistics |
+| `Lumora: Toggle Break Reminder` | Enable/disable break reminders |
+| `Lumora: Toggle Eye Strain Prevention` | Enable/disable eye care features |
+| `Lumora: Toggle Sound Effects` | Enable/disable typing sounds |
 
-## Settings
+## ⚙️ Configuration
 
 Customize Lumora through VS Code settings:
 
@@ -62,38 +77,40 @@ Customize Lumora through VS Code settings:
 }
 ```
 
-## Requirements
+## 🔧 Requirements
 
 - VS Code version 1.85.0 or higher
 - Node.js for sound effects (optional)
 
-## Known Issues
+## 📝 Release Notes
 
-Please report any issues on our [GitHub repository](https://github.com/Mizokuiam/Lumora/issues).
+### 1.0.1 (Latest)
+- Enhanced documentation and marketplace presentation
+- Added MIT License
+- Improved configuration options
+- Set up automated CI/CD pipeline
 
-## Contributing
+[View full changelog](CHANGELOG.md)
 
-We welcome contributions! Please see our [contributing guidelines](https://github.com/Mizokuiam/Lumora/blob/main/CONTRIBUTING.md) for details.
+## 🤝 Contributing
 
-## Release Notes
+We welcome contributions! Please check our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
-### 1.0.0
-- Initial release
-- Dynamic theme adaptation
-- Pomodoro timer
-- Eye strain prevention
-- Focus mode
-- Productivity tracking
+## 📫 Support
 
-## License
+- [Report Issues](https://github.com/Mizokuiam/Lumora/issues)
+- [Feature Requests](https://github.com/Mizokuiam/Lumora/issues)
+- [Q&A Discussions](https://github.com/Mizokuiam/Lumora/discussions)
+- [Premium Support](https://mizokuiam.gumroad.com/l/lumora-premium)
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## 📄 License
 
-## Support
-
-- [GitHub Issues](https://github.com/Mizokuiam/Lumora/issues)
-- [GitHub Discussions](https://github.com/Mizokuiam/Lumora/discussions)
+This extension is licensed under the [MIT License](LICENSE).
 
 ---
 
-**Enjoy coding with Lumora!** 🌟
+**Made with ❤️ by [Mizokuiam](https://github.com/Mizokuiam)**
+
+*Lumora - Illuminate your coding experience* ✨
+
+[Upgrade to Premium](https://mizokuiam.gumroad.com/l/lumora-premium) for advanced features and priority support! 🚀

@@ -20,6 +20,7 @@
         "mood",
         "pomodoro"
     ],
+    "preview": false,
     "icon": "icon.png",
     "galleryBanner": {
         "color": "#1E1E1E",
@@ -55,19 +56,38 @@
         "commands": [
             {
                 "command": "lumora.toggleFocusMode",
-                "title": "Lumora: Toggle Focus Mode"
+                "title": "Lumora: Toggle Focus Mode",
+                "category": "Lumora"
             },
             {
                 "command": "lumora.startPomodoro",
-                "title": "Lumora: Start Pomodoro Timer"
+                "title": "Lumora: Start Pomodoro Timer",
+                "category": "Lumora"
             },
             {
                 "command": "lumora.stopPomodoro",
-                "title": "Lumora: Stop Pomodoro Timer"
+                "title": "Lumora: Stop Pomodoro Timer",
+                "category": "Lumora"
             },
             {
                 "command": "lumora.showStats",
-                "title": "Lumora: Show Productivity Stats"
+                "title": "Lumora: Show Productivity Stats",
+                "category": "Lumora"
+            },
+            {
+                "command": "lumora.toggleBreakReminder",
+                "title": "Lumora: Toggle Break Reminder",
+                "category": "Lumora"
+            },
+            {
+                "command": "lumora.toggleEyeStrain",
+                "title": "Lumora: Toggle Eye Strain Prevention",
+                "category": "Lumora"
+            },
+            {
+                "command": "lumora.toggleSoundEffects",
+                "title": "Lumora: Toggle Sound Effects",
+                "category": "Lumora"
             }
         ],
         "configuration": {
