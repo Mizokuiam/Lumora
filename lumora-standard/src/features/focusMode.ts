@@ -2,81 +2,72 @@ import * as vscode from 'vscode';
 
 export class FocusMode {
     private enabled: boolean;
-    private context: vscode.ExtensionContext;
-    private decorationType: vscode.TextEditorDecorationType;
+    private statusBarItem: vscode.StatusBarItem;
+    private originalLayout: any;
 
-    constructor(context: vscode.ExtensionContext) {
-        this.context = context;
-        this.enabled = this.context.globalState.get('lumora.focusModeEnabled', false);
-        
-        // Create decoration type for dimming inactive code
-        this.decorationType = vscode.window.createTextEditorDecorationType({
-            opacity: '0.5',
-            rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed
-        });
-    }
-
-    public enable() {
-        this.enabled = true;
-        this.context.globalState.update('lumora.focusModeEnabled', true);
-        this.updateFocusState();
-        
-        // Hide activity bar and minimap
-        vscode.workspace.getConfiguration('workbench').update('activityBar.visible', false, true);
-        vscode.workspace.getConfiguration('editor').update('minimap.enabled', false, true);
-    }
-
-    public disable() {
+    constructor() {
         this.enabled = false;
-        this.context.globalState.update('lumora.focusModeEnabled', false);
-        this.clearDecorations();
-        
-        // Restore UI elements
-        vscode.workspace.getConfiguration('workbench').update('activityBar.visible', true, true);
-        vscode.workspace.getConfiguration('editor').update('minimap.enabled', true, true);
+        this.statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
+        this.updateStatusBar();
     }
 
-    public isEnabled(): boolean {
-        return this.enabled;
-    }
-
-    private updateFocusState() {
-        if (!this.enabled) return;
-
-        const activeEditor = vscode.window.activeTextEditor;
-        if (!activeEditor) return;
-
-        const visibleRange = activeEditor.visibleRanges[0];
-        const documentRange = new vscode.Range(
-            new vscode.Position(0, 0),
-            new vscode.Position(activeEditor.document.lineCount - 1, 0)
-        );
-
-        // Dim everything except the visible range
-        const decorations: vscode.DecorationOptions[] = [{
-            range: new vscode.Range(
-                documentRange.start,
-                visibleRange.start
-            )
-        },
-        {
-            range: new vscode.Range(
-                visibleRange.end,
-                documentRange.end
-            )
-        }];
-
-        activeEditor.setDecorations(this.decorationType, decorations);
-    }
-
-    private clearDecorations() {
-        const activeEditor = vscode.window.activeTextEditor;
-        if (activeEditor) {
-            activeEditor.setDecorations(this.decorationType, []);
+    public toggle() {
+        if (this.enabled) {
+            this.disable();
+        } else {
+            this.enable();
         }
     }
 
+    private enable() {
+        this.enabled = true;
+        this.saveCurrentLayout();
+        this.applyFocusLayout();
+        this.updateStatusBar();
+        vscode.window.showInformationMessage('Focus mode enabled');
+    }
+
+    private disable() {
+        this.enabled = false;
+        this.restoreLayout();
+        this.updateStatusBar();
+        vscode.window.showInformationMessage('Focus mode disabled');
+    }
+
+    private saveCurrentLayout() {
+        this.originalLayout = {
+            panel: vscode.workspace.getConfiguration('workbench').get('panel.defaultPosition'),
+            activityBar: vscode.workspace.getConfiguration('workbench').get('activityBar.visible'),
+            minimap: vscode.workspace.getConfiguration('editor').get('minimap.enabled'),
+            breadcrumbs: vscode.workspace.getConfiguration('breadcrumbs').get('enabled')
+        };
+    }
+
+    private applyFocusLayout() {
+        // Hide distracting UI elements
+        vscode.workspace.getConfiguration('workbench').update('panel.defaultPosition', 'hidden', true);
+        vscode.workspace.getConfiguration('workbench').update('activityBar.visible', false, true);
+        vscode.workspace.getConfiguration('editor').update('minimap.enabled', false, true);
+        vscode.workspace.getConfiguration('breadcrumbs').update('enabled', false, true);
+    }
+
+    private restoreLayout() {
+        if (!this.originalLayout) return;
+
+        vscode.workspace.getConfiguration('workbench').update('panel.defaultPosition', this.originalLayout.panel, true);
+        vscode.workspace.getConfiguration('workbench').update('activityBar.visible', this.originalLayout.activityBar, true);
+        vscode.workspace.getConfiguration('editor').update('minimap.enabled', this.originalLayout.minimap, true);
+        vscode.workspace.getConfiguration('breadcrumbs').update('enabled', this.originalLayout.breadcrumbs, true);
+    }
+
+    private updateStatusBar() {
+        this.statusBarItem.text = `$(eye${this.enabled ? '' : '-closed'}) Focus Mode`;
+        this.statusBarItem.tooltip = `Focus mode is ${this.enabled ? 'enabled' : 'disabled'}`;
+        this.statusBarItem.show();
+    }
+
     public dispose() {
-        this.decorationType.dispose();
+        this.disable();
+        this.statusBarItem.dispose();
     }
 }

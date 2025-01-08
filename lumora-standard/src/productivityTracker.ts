@@ -1,80 +1,85 @@
 import * as vscode from 'vscode';
 
+interface ProductivityStats {
+    score: number;
+    typingSpeed: number;
+    focusTime: number;
+    breaksTaken: number;
+}
+
 export class ProductivityTracker {
-    private score: number;
+    private stats: ProductivityStats;
     private lastUpdate: number;
-    private typingSpeed: number[];
-    private deletionRate: number[];
+    private typedCharacters: number;
 
     constructor() {
-        this.score = 0.5; // Start with neutral score
-        this.lastUpdate = Date.now();
-        this.typingSpeed = [];
-        this.deletionRate = [];
-    }
-
-    public updateProductivity(changes: readonly vscode.TextDocumentContentChangeEvent[]): number {
-        const now = Date.now();
-        const timeDiff = now - this.lastUpdate;
-        this.lastUpdate = now;
-
-        // Calculate metrics
-        const speed = this.calculateTypingSpeed(changes);
-        const deletions = this.calculateDeletionRate(changes);
-
-        // Update history
-        this.typingSpeed.push(speed);
-        this.deletionRate.push(deletions);
-
-        // Keep last hour of data
-        const oneHour = 60 * 60 * 1000;
-        this.typingSpeed = this.typingSpeed.slice(-oneHour);
-        this.deletionRate = this.deletionRate.slice(-oneHour);
-
-        // Calculate new score
-        this.score = this.calculateScore();
-
-        return this.score;
-    }
-
-    public getStats() {
-        return {
-            score: this.score,
-            typingSpeed: this.getAverageTypingSpeed(),
-            deletionRate: this.getAverageDeletionRate()
+        this.stats = {
+            score: 0,
+            typingSpeed: 0,
+            focusTime: 0,
+            breaksTaken: 0
         };
+        this.lastUpdate = Date.now();
+        this.typedCharacters = 0;
+
+        // Listen to document changes
+        vscode.workspace.onDidChangeTextDocument(e => {
+            this.updateStats(e.contentChanges);
+        });
     }
 
-    private calculateTypingSpeed(changes: readonly vscode.TextDocumentContentChangeEvent[]): number {
-        const totalCharacters = changes.reduce((sum, change) => sum + change.text.length, 0);
-        return totalCharacters / 5; // Simplified WPM calculation
+    private updateStats(changes: readonly vscode.TextDocumentContentChangeEvent[]) {
+        const now = Date.now();
+        const timeDiff = (now - this.lastUpdate) / 1000; // Convert to seconds
+
+        // Update typing speed
+        changes.forEach(change => {
+            this.typedCharacters += change.text.length;
+        });
+
+        if (timeDiff >= 60) { // Update every minute
+            this.stats.typingSpeed = this.typedCharacters / timeDiff;
+            this.typedCharacters = 0;
+            this.lastUpdate = now;
+
+            // Update productivity score
+            this.calculateScore();
+        }
     }
 
-    private calculateDeletionRate(changes: readonly vscode.TextDocumentContentChangeEvent[]): number {
-        const deletions = changes.filter(change => 
-            change.text === '' || change.text === '\b'
-        ).length;
-        return changes.length > 0 ? deletions / changes.length : 0;
+    private calculateScore() {
+        // Simple scoring based on typing speed and focus time
+        const speedScore = Math.min(this.stats.typingSpeed / 5, 1); // Normalize to 0-1
+        const focusScore = Math.min(this.stats.focusTime / 3600, 1); // Normalize to 0-1 (max 1 hour)
+        
+        this.stats.score = (speedScore * 0.4 + focusScore * 0.6) * 100;
     }
 
-    private getAverageTypingSpeed(): number {
-        if (this.typingSpeed.length === 0) return 0;
-        return this.typingSpeed.reduce((a, b) => a + b) / this.typingSpeed.length;
+    public showStats() {
+        const message = `Productivity Stats:
+- Score: ${Math.round(this.stats.score)}%
+- Typing Speed: ${Math.round(this.stats.typingSpeed)} chars/sec
+- Focus Time: ${Math.round(this.stats.focusTime / 60)} minutes
+- Breaks Taken: ${this.stats.breaksTaken}`;
+
+        vscode.window.showInformationMessage(message);
     }
 
-    private getAverageDeletionRate(): number {
-        if (this.deletionRate.length === 0) return 0;
-        return this.deletionRate.reduce((a, b) => a + b) / this.deletionRate.length;
+    public getStats(): ProductivityStats {
+        return { ...this.stats };
     }
 
-    private calculateScore(): number {
-        const avgSpeed = this.getAverageTypingSpeed();
-        const avgDeletion = this.getAverageDeletionRate();
+    public recordBreak() {
+        this.stats.breaksTaken++;
+        this.calculateScore();
+    }
 
-        // Higher typing speed and lower deletion rate indicate higher productivity
-        const speedFactor = Math.min(avgSpeed / 60, 1); // Cap at 60 WPM
-        const deletionFactor = 1 - avgDeletion;
+    public updateFocusTime(seconds: number) {
+        this.stats.focusTime = seconds;
+        this.calculateScore();
+    }
 
-        return (speedFactor * 0.7 + deletionFactor * 0.3);
+    public dispose() {
+        // Clean up any resources
     }
 }

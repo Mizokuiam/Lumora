@@ -1,80 +1,124 @@
 {
-  "name": "lumora-standard",
-  "displayName": "Lumora - Dynamic Theme",
-  "description": "AI-powered dynamic theme that adjusts based on your mood and productivity",
-  "version": "1.0.0",
-  "publisher": "lumora",
-  "engines": {
-    "vscode": "^1.60.0"
-  },
-  "categories": [
-    "Themes",
-    "Other"
-  ],
-  "activationEvents": [
-    "onStartupFinished"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "lumora.toggleThemeAdjustment",
-        "title": "Lumora: Toggle Theme Adjustment"
-      },
-      {
-        "command": "lumora.showProductivity",
-        "title": "Lumora: Show Productivity Stats"
-      },
-      {
-        "command": "lumora.togglePomodoro",
-        "title": "Lumora: Toggle Pomodoro Timer"
-      },
-      {
-        "command": "lumora.resetPomodoro",
-        "title": "Lumora: Reset Pomodoro Timer"
-      },
-      {
-        "command": "lumora.toggleEyeStrain",
-        "title": "Lumora: Toggle Eye Strain Prevention"
-      },
-      {
-        "command": "lumora.toggleSoundEffects",
-        "title": "Lumora: Toggle Sound Effects",
-        "category": "Lumora"
-      },
-      {
-        "command": "lumora.toggleFocusMode",
-        "title": "Lumora: Toggle Focus Mode",
-        "category": "Lumora"
-      },
-      {
-        "command": "lumora.showTimeStats",
-        "title": "Lumora: Show Time Statistics",
-        "category": "Lumora"
-      },
-      {
-        "command": "lumora.toggleBreakReminder",
-        "title": "Lumora: Toggle Break Reminders",
-        "category": "Lumora"
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "test": "node ./out/test/runTest.js"
-  },
-  "devDependencies": {
-    "@types/color": "^4.2.0",
-    "@types/node": "^16.x",
-    "@types/vscode": "^1.60.0",
-    "@typescript-eslint/eslint-plugin": "^5.x",
-    "@typescript-eslint/parser": "^5.x",
-    "eslint": "^8.x",
-    "typescript": "^4.x"
-  },
-  "dependencies": {
-    "color": "^4.2.3"
-  }
+    "name": "lumora",
+    "displayName": "Lumora - AI-Powered Dynamic Theme",
+    "description": "Enhance your coding experience with dynamic themes that adapt to your mood and productivity levels in real-time",
+    "version": "1.0.1",
+    "publisher": "mizokuiam",
+    "license": "MIT",
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "categories": [
+        "Themes",
+        "Other",
+        "Visualization"
+    ],
+    "keywords": [
+        "theme",
+        "productivity",
+        "focus",
+        "mood",
+        "pomodoro"
+    ],
+    "icon": "icon.png",
+    "galleryBanner": {
+        "color": "#1E1E1E",
+        "theme": "dark"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Mizokuiam/Lumora.git"
+    },
+    "bugs": {
+        "url": "https://github.com/Mizokuiam/Lumora/issues"
+    },
+    "homepage": "https://github.com/Mizokuiam/Lumora#readme",
+    "qna": "https://github.com/Mizokuiam/Lumora/discussions",
+    "badges": [
+        {
+            "url": "https://img.shields.io/visual-studio-marketplace/v/mizokuiam.lumora",
+            "href": "https://marketplace.visualstudio.com/items?itemName=mizokuiam.lumora",
+            "description": "VS Marketplace Version"
+        },
+        {
+            "url": "https://img.shields.io/visual-studio-marketplace/d/mizokuiam.lumora",
+            "href": "https://marketplace.visualstudio.com/items?itemName=mizokuiam.lumora",
+            "description": "VS Marketplace Downloads"
+        }
+    ],
+    "markdown": "github",
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "lumora.toggleFocusMode",
+                "title": "Lumora: Toggle Focus Mode"
+            },
+            {
+                "command": "lumora.startPomodoro",
+                "title": "Lumora: Start Pomodoro Timer"
+            },
+            {
+                "command": "lumora.stopPomodoro",
+                "title": "Lumora: Stop Pomodoro Timer"
+            },
+            {
+                "command": "lumora.showStats",
+                "title": "Lumora: Show Productivity Stats"
+            }
+        ],
+        "configuration": {
+            "title": "Lumora",
+            "properties": {
+                "lumora.pomodoroWorkDuration": {
+                    "type": "number",
+                    "default": 25,
+                    "description": "Duration of work sessions in minutes"
+                },
+                "lumora.pomodoroBreakDuration": {
+                    "type": "number",
+                    "default": 5,
+                    "description": "Duration of break sessions in minutes"
+                },
+                "lumora.enableSoundEffects": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable ambient typing sound effects"
+                },
+                "lumora.enableEyeStrainPrevention": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable 20-20-20 rule reminders for eye strain prevention"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.85.0",
+        "@types/glob": "^8.1.0",
+        "@types/mocha": "^10.0.6",
+        "@types/node": "20.10.6",
+        "@typescript-eslint/eslint-plugin": "^6.17.0",
+        "@typescript-eslint/parser": "^6.17.0",
+        "eslint": "^8.56.0",
+        "glob": "^10.3.10",
+        "mocha": "^10.2.0",
+        "typescript": "^5.3.3",
+        "@vscode/test-electron": "^2.3.8"
+    },
+    "dependencies": {
+        "@types/color": "^4.2.0",
+        "color": "^4.2.3"
+    }
 }

@@ -1,102 +1,114 @@
 import * as vscode from 'vscode';
 
-interface BreakStats {
-    lastBreakTime: number;
-    breaksCompleted: number;
-    breaksDismissed: number;
-}
-
 export class BreakReminder {
-    private context: vscode.ExtensionContext;
+    private statusBarItem: vscode.StatusBarItem;
+    private timer: NodeJS.Timeout | undefined;
+    private timeUntilBreak: number;
     private enabled: boolean;
-    private stats: BreakStats;
-    private checkInterval: NodeJS.Timer | undefined;
-    private readonly DEFAULT_INTERVAL = 30 * 60 * 1000; // 30 minutes
-    private readonly STRETCHES = [
-        "Roll your shoulders backwards and forwards",
-        "Stretch your arms above your head",
-        "Look at something 20 feet away for 20 seconds",
-        "Stand up and walk around for a minute",
-        "Gently rotate your wrists",
-        "Do some neck stretches",
-        "Take deep breaths"
-    ];
+    private readonly BREAK_INTERVAL = 30 * 60; // 30 minutes in seconds
+    private readonly CHECK_INTERVAL = 1000; // Check every second
 
-    constructor(context: vscode.ExtensionContext) {
-        this.context = context;
-        this.enabled = this.context.globalState.get('lumora.breakReminderEnabled', true);
-        this.stats = this.loadStats();
-        
+    constructor() {
+        this.enabled = false;
+        this.statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
+        this.timeUntilBreak = this.BREAK_INTERVAL;
+        this.updateStatusBar();
+    }
+
+    public toggle() {
         if (this.enabled) {
+            this.stop();
+            vscode.window.showInformationMessage('Break reminders disabled');
+        } else {
             this.start();
+            vscode.window.showInformationMessage('Break reminders enabled');
         }
-    }
-
-    private loadStats(): BreakStats {
-        return this.context.globalState.get('lumora.breakStats', {
-            lastBreakTime: Date.now(),
-            breaksCompleted: 0,
-            breaksDismissed: 0
-        });
-    }
-
-    private async suggestBreak() {
-        const stretch = this.STRETCHES[Math.floor(Math.random() * this.STRETCHES.length)];
-        const take = 'Take a Break';
-        const dismiss = 'Dismiss';
-        
-        const choice = await vscode.window.showInformationMessage(
-            `Time for a break! Suggestion: ${stretch}`,
-            take,
-            dismiss
-        );
-
-        if (choice === take) {
-            this.stats.breaksCompleted++;
-            this.stats.lastBreakTime = Date.now();
-            vscode.window.showInformationMessage('Great job taking care of yourself!');
-        } else if (choice === dismiss) {
-            this.stats.breaksDismissed++;
-        }
-
-        this.context.globalState.update('lumora.breakStats', this.stats);
     }
 
     public start() {
         this.enabled = true;
-        this.context.globalState.update('lumora.breakReminderEnabled', true);
-
-        if (!this.checkInterval) {
-            this.checkInterval = setInterval(() => {
-                const now = Date.now();
-                if (now - this.stats.lastBreakTime >= this.DEFAULT_INTERVAL) {
-                    this.suggestBreak();
-                }
-            }, 60000); // Check every minute
-        }
+        this.statusBarItem.show();
+        this.startTimer();
+        this.updateStatusBar();
     }
 
     public stop() {
         this.enabled = false;
-        this.context.globalState.update('lumora.breakReminderEnabled', false);
+        if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = undefined;
+        }
+        this.statusBarItem.hide();
+    }
 
-        if (this.checkInterval) {
-            clearInterval(this.checkInterval);
-            this.checkInterval = undefined;
+    private startTimer() {
+        if (this.timer) {
+            clearTimeout(this.timer);
+        }
+        this.timer = setInterval(() => {
+            this.tick();
+        }, this.CHECK_INTERVAL);
+    }
+
+    private tick() {
+        if (this.timeUntilBreak > 0) {
+            this.timeUntilBreak--;
+            this.updateStatusBar();
+        } else {
+            this.suggestBreak();
         }
     }
 
-    public isEnabled(): boolean {
-        return this.enabled;
+    private updateStatusBar() {
+        const minutes = Math.floor(this.timeUntilBreak / 60);
+        const seconds = this.timeUntilBreak % 60;
+        this.statusBarItem.text = `$(clock) ${minutes}:${seconds.toString().padStart(2, '0')}`;
+        this.statusBarItem.tooltip = 'Time until next break';
     }
 
-    public getStats(): BreakStats {
-        return { ...this.stats };
+    private async suggestBreak() {
+        const take = 'Take Break';
+        const skip = 'Skip';
+        const result = await vscode.window.showInformationMessage(
+            "Time for a break! Take a few minutes to rest your eyes and stretch.",
+            take,
+            skip
+        );
+
+        if (result === take) {
+            // Stop the timer during break
+            if (this.timer) {
+                clearTimeout(this.timer);
+                this.timer = undefined;
+            }
+            
+            // Show break timer
+            const breakLength = 5 * 60; // 5 minutes
+            let breakTimeLeft = breakLength;
+            
+            const breakTimer = setInterval(() => {
+                if (breakTimeLeft > 0) {
+                    const mins = Math.floor(breakTimeLeft / 60);
+                    const secs = breakTimeLeft % 60;
+                    this.statusBarItem.text = `$(clock) Break: ${mins}:${secs.toString().padStart(2, '0')}`;
+                    breakTimeLeft--;
+                } else {
+                    clearInterval(breakTimer);
+                    vscode.window.showInformationMessage('Break finished! Back to work.');
+                    this.timeUntilBreak = this.BREAK_INTERVAL;
+                    this.startTimer();
+                }
+            }, 1000);
+        } else {
+            // Skip break
+            this.timeUntilBreak = this.BREAK_INTERVAL;
+        }
     }
 
     public dispose() {
-        if (this.checkInterval) {
-            clearInterval(this.checkInterval);
+        if (this.timer) {
+            clearTimeout(this.timer);
         }
+        this.statusBarItem.dispose();
     }
 }

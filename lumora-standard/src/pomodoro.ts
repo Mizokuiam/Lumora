@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 export class PomodoroTimer {
     private statusBarItem: vscode.StatusBarItem;
-    private timer: NodeJS.Timer | undefined;
+    private timer: NodeJS.Timeout | undefined;
     private remainingTime: number;
     private isWorkTime: boolean;
     private workDuration: number;
@@ -32,7 +32,7 @@ export class PomodoroTimer {
         if (this.running) return;
 
         this.running = true;
-        this.timer = setInterval(() => this.tick(), 1000);
+        this.startTimer();
         this.updateStatusBar();
     }
 
@@ -40,7 +40,7 @@ export class PomodoroTimer {
         if (!this.running) return;
 
         if (this.timer) {
-            clearInterval(this.timer);
+            clearTimeout(this.timer);
             this.timer = undefined;
         }
         this.running = false;
@@ -93,6 +93,15 @@ export class PomodoroTimer {
                 this.start();
             }
         });
+    }
+
+    private startTimer() {
+        if (this.timer) {
+            clearTimeout(this.timer);
+        }
+        this.timer = setInterval(() => {
+            this.tick();
+        }, 1000);
     }
 
     private updateStatusBar() {

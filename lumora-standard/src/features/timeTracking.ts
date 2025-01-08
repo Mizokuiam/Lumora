@@ -9,13 +9,13 @@ interface TimeStats {
 export class TimeTracking {
     private context: vscode.ExtensionContext;
     private stats: TimeStats;
-    private updateInterval: NodeJS.Timer | undefined;
+    private updateTimer: NodeJS.Timeout | undefined;
     private readonly UPDATE_INTERVAL = 60000; // Update every minute
 
     constructor(context: vscode.ExtensionContext) {
         this.context = context;
         this.stats = this.loadStats();
-        this.startTracking();
+        this.startUpdateTimer();
     }
 
     private loadStats(): TimeStats {
@@ -28,9 +28,11 @@ export class TimeTracking {
         return this.context.globalState.get('lumora.timeStats', defaultStats);
     }
 
-    private startTracking() {
-        // Update stats every minute
-        this.updateInterval = setInterval(() => {
+    private startUpdateTimer() {
+        if (this.updateTimer) {
+            clearTimeout(this.updateTimer);
+        }
+        this.updateTimer = setInterval(() => {
             this.updateStats();
         }, this.UPDATE_INTERVAL);
 
@@ -95,8 +97,8 @@ export class TimeTracking {
     }
 
     public dispose() {
-        if (this.updateInterval) {
-            clearInterval(this.updateInterval);
+        if (this.updateTimer) {
+            clearTimeout(this.updateTimer);
         }
         this.updateStats(); // Final update before disposing
     }

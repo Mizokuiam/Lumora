@@ -1,54 +1,52 @@
 import * as vscode from 'vscode';
-import * as Color from 'color';
+import Color from 'color';
 
 export class ThemeManager {
-    private currentTheme: any;
-    private baseTheme: any;
+    private currentTheme: vscode.ColorTheme | undefined;
 
     constructor() {
-        this.initializeTheme();
-    }
-
-    private initializeTheme() {
-        this.baseTheme = vscode.workspace.getConfiguration('workbench').get('colorTheme');
+        this.currentTheme = vscode.window.activeColorTheme;
+        vscode.window.onDidChangeActiveColorTheme(theme => {
+            this.currentTheme = theme;
+        });
     }
 
     public adjustTheme(mood: number, productivity: number) {
-        const config = vscode.workspace.getConfiguration('lumora');
-        if (!config.get('enableAutoAdjust')) {
-            return;
+        if (!this.currentTheme) return;
+
+        const workbenchColors = this.calculateColors(mood, productivity);
+        const config = vscode.workspace.getConfiguration('workbench');
+        
+        for (const [key, value] of Object.entries(workbenchColors)) {
+            config.update(key, value, true);
         }
-
-        // Calculate color adjustments based on mood and productivity
-        const saturation = this.calculateSaturation(mood);
-        const brightness = this.calculateBrightness(productivity);
-
-        this.applyColorAdjustments(saturation, brightness);
     }
 
-    private calculateSaturation(mood: number): number {
-        // Mood ranges from 0 (stressed) to 1 (relaxed)
-        return 0.5 + (mood * 0.5);
-    }
+    private calculateColors(mood: number, productivity: number): Record<string, string> {
+        const baseColor = this.currentTheme!.kind === vscode.ColorThemeKind.Dark
+            ? Color('#1e1e1e')
+            : Color('#ffffff');
 
-    private calculateBrightness(productivity: number): number {
-        // Productivity ranges from 0 (low) to 1 (high)
-        return 0.4 + (productivity * 0.6);
-    }
+        // Adjust saturation based on mood (0-1)
+        const saturation = 0.3 + (mood * 0.4); // 30-70% saturation
+        
+        // Adjust brightness based on productivity (0-1)
+        const brightness = 0.4 + (productivity * 0.3); // 40-70% brightness
 
-    private applyColorAdjustments(saturation: number, brightness: number) {
-        const workbenchConfig = vscode.workspace.getConfiguration('workbench');
-        const editorConfig = vscode.workspace.getConfiguration('editor');
-
-        // Adjust editor colors
-        const baseBackground = Color('#1e1e1e');
-        const adjustedBackground = baseBackground
+        const accentColor = baseColor
+            .rotate(mood * 360) // Hue based on mood
             .saturate(saturation)
-            .lightness(brightness * 100);
+            .darken(1 - brightness);
 
-        workbenchConfig.update('colorCustomizations', {
-            'editor.background': adjustedBackground.hex(),
-            'editor.foreground': brightness > 0.5 ? '#000000' : '#ffffff'
-        }, true);
+        return {
+            'colorCustomizations.editor.background': accentColor.toString(),
+            'colorCustomizations.editor.foreground': accentColor.isLight() ? '#000000' : '#ffffff'
+        };
+    }
+
+    public dispose() {
+        // Clean up any theme customizations
+        const config = vscode.workspace.getConfiguration('workbench');
+        config.update('colorCustomizations', undefined, true);
     }
 }
