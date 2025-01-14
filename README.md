@@ -1,3 +1,8 @@
+![GitHub stars](https://img.shields.io/github/stars/Mizokuiam/Lumora)
+![GitHub forks](https://img.shields.io/github/forks/Mizokuiam/Lumora)
+![GitHub issues](https://img.shields.io/github/issues/Mizokuiam/Lumora)
+![GitHub license](https://img.shields.io/github/license/Mizokuiam/Lumora)
+
 # Lumora - AI-Powered Dynamic Theme for VS Code
 
 Lumora enhances your coding experience by dynamically adjusting VS Code themes based on your mood and productivity levels in real-time.
